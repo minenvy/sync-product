@@ -5,9 +5,13 @@ import db from "@/db.server";
 import styles from "./styles.module.css";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  await authenticate.admin(request);
+  const { session } = await authenticate.admin(request);
 
-  const products = await db.product.findMany();
+  const products = await db.product.findMany({
+    where: {
+      shop: session.shop,
+    },
+  });
   return products ?? [];
 };
 
